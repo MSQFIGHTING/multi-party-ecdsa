@@ -166,14 +166,14 @@ impl<'r> FromRequest<'r> for LastEventId {
         match header {
             Some(Ok(last_seen_msg)) => Outcome::Success(LastEventId(Some(last_seen_msg))),
             Some(Err(_parse_err)) => {
-                Outcome::Failure((Status::BadRequest, "last seen msg id is not valid"))
+                Outcome::Error((Status::BadRequest, "last seen msg id is not valid"))   //修改了这一部分
             }
             None => Outcome::Success(LastEventId(None)),
         }
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]    //修改了这里
 struct IssuedUniqueIdx {
     unique_idx: u16,
 }

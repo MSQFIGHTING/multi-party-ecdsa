@@ -37,11 +37,12 @@ async fn main() -> Result<()> {
     let local_share = tokio::fs::read(args.local_share)
         .await
         .context("cannot read local share")?;
+    //这里有一些语法并不了解，为什么直接从vec变为了localkey
     let local_share = serde_json::from_slice(&local_share).context("parse local share")?;
     let number_of_parties = args.parties.len();
 
     let (i, incoming, outgoing) =
-        join_computation(args.address.clone(), &format!("{}-offline", args.room))
+        join_computation(args.address.clone(), &format!("{}-offline", args.room))   //format跟python中的类似
             .await
             .context("join offline computation")?;
 
@@ -55,7 +56,7 @@ async fn main() -> Result<()> {
         .await
         .map_err(|e| anyhow!("protocol execution terminated with error: {}", e))?;
 
-    let (_i, incoming, outgoing) = join_computation(args.address, &format!("{}-online", args.room))
+    let (i, incoming, outgoing) = join_computation(args.address, &format!("{}-online", args.room))
         .await
         .context("join online computation")?;
 

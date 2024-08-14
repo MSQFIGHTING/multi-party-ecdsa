@@ -11,6 +11,7 @@ use gg20_sm_client::join_computation;
 
 #[derive(Debug, StructOpt)]
 struct Cli {
+    //这里会默认使用--address作为long，不指定short就会使用字段的首字母
     #[structopt(short, long, default_value = "http://localhost:8000/")]
     address: surf::Url,
     #[structopt(short, long, default_value = "default-keygen")]
@@ -18,10 +19,13 @@ struct Cli {
     #[structopt(short, long)]
     output: PathBuf,
 
+    //index表明当前生成的是第几个私钥片段。
     #[structopt(short, long)]
     index: u16,
+    //这里阈值就是要有多少个以上的人对这个信息进行签名，eg t = 1,则需要两个人。
     #[structopt(short, long)]
     threshold: u16,
+    //number_of_parties是指代有多少个人持有私钥
     #[structopt(short, long)]
     number_of_parties: u16,
 }
@@ -34,6 +38,7 @@ async fn main() -> Result<()> {
         .create_new(true)
         .open(args.output)
         .await
+        //下面的?用于简化错误处理，如果操作失败，会将错误返回调用者，输出对应的内容
         .context("cannot create output file")?;
 
     let (_i, incoming, outgoing) = join_computation(args.address, &args.room)

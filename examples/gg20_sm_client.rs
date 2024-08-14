@@ -15,6 +15,7 @@ pub async fn join_computation<M>(
     impl Stream<Item = Result<Msg<M>>>,
     impl Sink<Msg<M>, Error = anyhow::Error>,
 )>
+//where子句是对泛型必须实现的trait的一个约束
 where
     M: Serialize + DeserializeOwned,
 {
@@ -133,7 +134,9 @@ enum Cmd {
     IssueIdx,
 }
 
+//这个属性宏标记一个异步函数，作为异步运行时的入口点，可以在这个函数中使用await
 #[tokio::main]
+//这个是忽略未使用代码的警告
 #[allow(dead_code)]
 async fn main() -> Result<()> {
     let args: Cli = Cli::from_args();
