@@ -50,6 +50,8 @@ async fn main() -> Result<()> {
     tokio::pin!(incoming);
     tokio::pin!(outgoing);
 
+    
+    
     let signing = OfflineStage::new(i, args.parties, local_share)?;
     let completed_offline_stage = AsyncProtocol::new(signing, incoming, outgoing)
         .run()
@@ -63,8 +65,10 @@ async fn main() -> Result<()> {
     tokio::pin!(incoming);
     tokio::pin!(outgoing);
 
+    let dgst: Vec<u8> = hex::decode(args.data_to_sign).context("decode data failed")?;
+
     let (signing, partial_signature) = SignManual::new(
-        BigInt::from_bytes(args.data_to_sign.as_bytes()),
+        BigInt::from_bytes(&dgst),
         completed_offline_stage,
     )?;
 
